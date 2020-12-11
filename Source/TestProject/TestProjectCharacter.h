@@ -34,6 +34,8 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
 
+	virtual void Tick(float DeltaTime) override;
+
 
 public:
 	ATestProjectCharacter();
@@ -44,8 +46,6 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	FVector MuzzleOffset;
 
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class AProjectile> ProjectileClass;
@@ -53,7 +53,16 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class AProjectile* TestProjectile;
 
+	UWorld* World;
+	bool KeyCheck;
+	bool fireOn;
+	float InputTime;
+	
+
 public:
-	UFUNCTION()
-	void Fire();	
+	UFUNCTION()		
+	void Fire(bool keycheck);	
+
+	void StartFire();
+	void StopFire();
 };

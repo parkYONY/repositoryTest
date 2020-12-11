@@ -44,8 +44,33 @@ ATestProjectCharacter::ATestProjectCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
-}
 
+	KeyCheck = false;
+	fireOn = false;
+	InputTime = 0.0f;
+}
+void ATestProjectCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	InputTime += DeltaTime;		
+	if (KeyCheck)
+	{		
+		if (InputTime >= 3.0f)
+		{
+			fireOn = true;
+		}
+	}
+	else
+	{				
+		if (fireOn)
+		{
+			Fire(fireOn);
+			UE_LOG(LogTemp, Warning, TEXT("3second shoot"));
+		}
+		InputTime = 0.0f;
+	}
+}
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -59,13 +84,31 @@ void ATestProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ATestProjectCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &ATestProjectCharacter::TouchStopped);
 
-	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ATestProjectCharacter::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ATestProjectCharacter::StartFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ATestProjectCharacter::StopFire);
+
+	//PlayerInputComponent->BindAxis("FireBall", this, &ATestProjectCharacter::FireBall);
+}
+
+void ATestProjectCharacter::StartFire()
+{
+	KeyCheck = true;
+}
+
+void ATestProjectCharacter::StopFire()
+{
+	KeyCheck = false;
+	if (!fireOn)
+	{
+		Fire(fireOn);
+		UE_LOG(LogTemp, Warning, TEXT("basic shoot"));
+	}	
 }
 
 void ATestProjectCharacter::MoveRight(float Value)
 {
-	// add movement in that direction
-	AddMovementInput(FVector(0.f,-1.f,0.f), Value);
+	// add movement in that direction	
+	AddMovementInput(FVector(0.f,-1.f,0.f), Value);	
 }
 
 void ATestProjectCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location)
@@ -79,19 +122,21 @@ void ATestProjectCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, co
 	StopJumping();
 }
 
-void ATestProjectCharacter::Fire()
-{
+void ATestProjectCharacter::Fire(bool keycheck)
+{	
 	if (ProjectileClass)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Fire"));		
 
-		UWorld* World = GetWorld();
+		World = GetWorld();
 		if (World != nullptr)
 		{
 			FVector playerLocation = World->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 			FRotator playerRotation = World->GetFirstPlayerController()->GetPawn()->GetActorRotation();
-
-			FVector MuzzleLocation = playerLocation + FTransform(playerRotation).TransformVector(MuzzleOffset);
+			
+			FVector offset = FVector(20.0f, 0.0f, 0.0f);			
+			FVector MuzzleLocation = playerLocation + FTransform(playerRotation).TransformVector(offset);
+			MuzzleLocation.Z = (MuzzleLocation.Z / 2) + 50.0f;			
 			FRotator MuzzleRotation = playerRotation;
 
 			FActorSpawnParameters SpawnParams;
@@ -103,15 +148,12 @@ void ATestProjectCharacter::Fire()
 			if (TestProjectile != nullptr)
 			{
 				FVector LaunchDirection = MuzzleRotation.Vector();					
-				TestProjectile->FireVelocitySetting(LaunchDirection);
+				TestProjectile->SetFireVelocitySetting(LaunchDirection);
+				TestProjectile->SetArrowSetting(keycheck);
 			}			
-			//AProjectile* Projectile = NewObject<AProjectile>(this);
-			//if (Projectile != nullptr)
-			//{
-			//	Projectile->Initailize();
-			//	//Projectile->CreateProjectile(World, MuzzleLocation, MuzzleRotation, SpawnParams);
-			//}	
 		}
+		fireOn = false;
+		InputTime = 0.0f;
 	}
 }
 

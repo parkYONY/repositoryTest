@@ -15,8 +15,7 @@ AProjectile::AProjectile()
 	UE_LOG(LogTemp, Warning, TEXT("aprojectile"));
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	if (CollisionComponent != nullptr)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("CollisionComponent"));
+	{		
 		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
 		CollisionComponent->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 		CollisionComponent->InitSphereRadius(15.0f);
@@ -25,54 +24,91 @@ AProjectile::AProjectile()
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	if (ProjectileMovementComponent != nullptr)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("ProjectileMovementComponent"));
+	{		
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 		ProjectileMovementComponent->InitialSpeed = 100.0f;
 		ProjectileMovementComponent->MaxSpeed = 100.0f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->bShouldBounce = true;
-		ProjectileMovementComponent->Bounciness = 0.3f;
+		ProjectileMovementComponent->Bounciness = 0.3f;		
 	}
 
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
 	if (ArrowComponent != nullptr)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("ArrowComponent"));
+	{		
 		ArrowComponent->bHiddenInGame = false;
 		ArrowComponent->ArrowColor = FColor(150, 200, 255);
 		ArrowComponent->bTreatAsASprite = true;
 		ArrowComponent->SetupAttachment(CollisionComponent);
-		ArrowComponent->bIsScreenSizeScaled = true;
-	}
-	InitialLifeSpan = 3.0f;		
-	StateCheck = false;
+		ArrowComponent->bIsScreenSizeScaled = true;			
+		ArrowComponent->SetEditorScale(1.0f);
+	}		
+	destroyTime = 0;
 }
 
 // Called when the game starts or when spawned
 void AProjectile::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();			
 }
 
 // Called every frame
 void AProjectile::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);		
-	//UE_LOG(LogTemp, Warning, TEXT("Tick"));
+	Super::Tick(DeltaTime);					
 }
-void AProjectile::FireVelocitySetting(const FVector& Direction)
-{			
-	//ProjectileMovementComponent->InitialSpeed = GetWorld()->GetDeltaSeconds();	
+void AProjectile::SetFireVelocitySetting(const FVector& Direction)
+{		
+	//UE_LOG(LogTemp, Warning, TEXT("Velocity"));
+	float velocityX = FMath::Clamp(Direction.X, -1.0f, 1.0f) * ProjectileMovementComponent->InitialSpeed;
+	float velocityY = FMath::Clamp(Direction.Y, -1.0f, 1.0f) * ProjectileMovementComponent->InitialSpeed;
+	float velocityZ = FMath::Clamp(Direction.Z, -1.0f, 1.0f) * ProjectileMovementComponent->InitialSpeed;
+
+	FVector Veclocity = FVector(velocityX, velocityY, velocityZ);
+	ProjectileMovementComponent->Velocity = Veclocity;	
+}
+void AProjectile::SetArrowSetting(bool type)
+{	
+	FVector scale = FVector(0.0f, 0.0f, 0.0f);
+	destroyTime = 0;
+	if (type)
+	{
+		destroyTime = 5;
+		UE_LOG(LogTemp, Warning, TEXT("3second"));		
+		scale = FVector(5.0f, 5.0f, 5.0f);						
+	}
+	else
+	{		
+		destroyTime = 3;
+		UE_LOG(LogTemp, Warning, TEXT("basic"));		
+		scale = FVector(1.0f, 1.0f, 1.0f);		
+	}		
+	ArrowComponent->SetWorldScale3D(scale);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AProjectile::TimeDestroy, 1.0f, true);
+}
+void AProjectile::TimeDestroy()
+{	
+	--destroyTime;
+	if (destroyTime < 1)
+	{
+		ProjectileObjectDistroy();
+	}
 }
 void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("collision"));
-	//if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("collision"));
-	//	//OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
-	//}
+	//UE_LOG(LogTemp, Warning, TEXT("collision"));
+	if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
+	{		
+		ProjectileObjectDistroy();
+		//OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+	}
+}
+void AProjectile::ProjectileObjectDistroy()
+{
+	CollisionComponent->DestroyComponent();
+	ProjectileMovementComponent->DestroyComponent();
+	ArrowComponent->DestroyComponent();
+	this->Destroy();
 }
 

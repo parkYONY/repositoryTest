@@ -6,10 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
-class USphereComponent;
-class UProjectileMovementComponent;
-class UArrowComponent;
-
 UCLASS()
 class TESTPROJECT_API AProjectile : public AActor
 {
@@ -17,7 +13,7 @@ class TESTPROJECT_API AProjectile : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	AProjectile();
+	AProjectile();	
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,21 +25,24 @@ public:
 
 public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	USphereComponent* CollisionComponent;
+	class USphereComponent* CollisionComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = Movement)
-	UProjectileMovementComponent* ProjectileMovementComponent;
-
-private:
-	UPROPERTY()
-	UArrowComponent* ArrowComponent;
-		
-	bool StateCheck;
-
-public:
-	void FireVelocitySetting(const FVector& Direction);
-	void SetStateCheck(bool check) { StateCheck = check; }
+	class UProjectileMovementComponent* ProjectileMovementComponent;
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = Arrow)
+	class UArrowComponent* ArrowComponent;	
+
+	FTimerHandle TimerHandle;		
+	int32 destroyTime;
+
+public:
+	void SetFireVelocitySetting(const FVector& Direction);	
+	void SetArrowSetting(bool type);		
+	void TimeDestroy();
+	void ProjectileObjectDistroy();
 };
