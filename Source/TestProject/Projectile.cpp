@@ -83,49 +83,6 @@ void AProjectile::SetArrowSetting(FVector scale, FColor color)
 {	
 	ArrowComponent->SetWorldScale3D(scale);		
 	ArrowComponent->ArrowColor = color;
-	//FVector scale = FVector(0.0f, 0.0f, 0.0f);
-	////destroyTime = 0;
-	//if (type)
-	//{
-	//	//destroyTime = 5;
-	//	//UE_LOG(LogTemp, Warning, TEXT("3second"));		
-	//	scale = FVector(5.0f, 5.0f, 5.0f);						
-	//}
-	//else
-	//{		
-	//	//destroyTime = 3;
-	//	//UE_LOG(LogTemp, Warning, TEXT("basic"));		
-	//	scale = FVector(1.0f, 1.0f, 1.0f);		
-	//}		
-	//ArrowComponent->SetWorldScale3D(scale);
-	//GetWorldTimerManager().SetTimer(TimerHandle, this, &AProjectile::TimeDestroy, 1.0f, true);
-
-	//FVector scale = FVector(0.0f, 0.0f, 0.0f);
-	//destroyTime = 0;
-	//switch (keytype)
-	//{
-	//case EFireType::E_1Second:
-	//	break;
-	//case EFireType::E_3Second:
-	//	destroyTime = 5;
-	//	UE_LOG(LogTemp, Warning, TEXT("projecile 3second"));		
-	//	scale = FVector(5.0f, 5.0f, 5.0f);
-	//	break;
-	//case EFireType::E_Basic_Q:
-	//	destroyTime = 3;
-	//	UE_LOG(LogTemp, Warning, TEXT("projecile Q"));		
-	//	scale = FVector(1.0f, 1.0f, 1.0f);
-	//	break;
-	//case EFireType::E_Basic_W:
-	//	destroyTime = 5;
-	//	UE_LOG(LogTemp, Warning, TEXT("projecile W"));		
-	//	scale = FVector(1.0f, 1.0f, 1.0f);
-	//	break;
-	//default:
-	//	break;
-	//}
-	//ArrowComponent->SetWorldScale3D(scale);
-	//GetWorldTimerManager().SetTimer(TimerHandle, this, &AProjectile::TimeDestroy, 1.0f, true);
 }
 void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {

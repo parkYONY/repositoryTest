@@ -15,13 +15,13 @@ class TESTPROJECT_API UGageUI : public UProjectilUI
 	GENERATED_BODY()
 
 public:
-	void Initailize() override;
+	//void Initailize() override;
 
-	void SetProgressBar(UProgressBar* bar);
+	//void SetProgressBar(UProgressBar* bar);
 	void SetGageValue(float value);
 
 private:
-	UPROPERTY()
-	class UProgressBar* BarUI;
+	//UPROPERTY()
+	//class UProgressBar* BarUI;
 
 };

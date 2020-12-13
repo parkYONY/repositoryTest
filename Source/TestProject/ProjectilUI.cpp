@@ -6,7 +6,7 @@
 #include "Components/ProgressBar.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetTree.h"
-#include "GageUI.h"
+#include "TestProjectCharacter.h"
 
 UProjectilUI::UProjectilUI(const FObjectInitializer& Initializer) : 
 	Super(Initializer)
@@ -19,14 +19,15 @@ UProjectilUI::UProjectilUI(const FObjectInitializer& Initializer) :
 	//TArray<UWidget*> widgets;
 	//WidgetTree->GetAllWidgets(widgets);
 }
-void UProjectilUI::Initailize()
+void UProjectilUI::Init(ATestProjectCharacter* player)
 {	
 	UE_LOG(LogTemp, Warning, TEXT("UProjectilUI"));		
+	Player = player;
 	//GageClass = NewObject<UGageUI>(UProjectilUI::StaticClass());
 	//if (GageClass)
 	//{
 	//	GageClass->Initailize();
-	//}		
+	//}			
 }
 void UProjectilUI::NativeConstruct()
 {
@@ -57,15 +58,15 @@ void UProjectilUI::NativeConstruct()
 			if (Widget && Widget->IsA(UProgressBar::StaticClass()))
 			{
 				ProgressBarUI = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBarUI")));
-				if (ProgressBarUI)
-				{							
-					//GageClass = NewObject<UGageUI>(UProjectilUI::StaticClass());
-					//if (GageClass)
-					//{
-					//	GageClass->Initailize();
-					//	GageClass->SetProgressBar(ProgressBarUI);
-					//}
-				}
+				//if (ProgressBarUI)
+				//{							
+				//	//GageClass = NewObject<UGageUI>(UProjectilUI::StaticClass());
+				//	//if (GageClass)
+				//	//{
+				//	//	GageClass->Initailize();
+				//	//	GageClass->SetProgressBar(ProgressBarUI);
+				//	//}
+				//}
 			}
 		}
 	}

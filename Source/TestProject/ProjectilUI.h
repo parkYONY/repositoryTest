@@ -20,23 +20,25 @@ public:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	
-	virtual void Initailize();	
+	UFUNCTION()
+	void Init(ATestProjectCharacter* player);
 
 	UFUNCTION()
 	void OnResetButtonClicked();
-	void SetGage(float value);	
-	float InputTime;
+	void SetGage(float value);		
 	
 private:
-
-	UPROPERTY(VisibleAnywhere)
-		class UGageUI* GageClass;
+	//UPROPERTY(meta = (BindWidget))
+	//class UGageUI* GageClass;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* ResetButton;
 
 	UPROPERTY(meta=(BindWidget))
 	class UProgressBar* ProgressBarUI;	
+
+	UPROPERTY(VisibleAnywhere)
+	class ATestProjectCharacter* Player;
 
 	//UPROPERTY(VisibleAnywhere)
 	//class UGageUI* gageBar;

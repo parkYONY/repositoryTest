@@ -62,7 +62,7 @@ void ATestProjectCharacter::BeginPlay()
 	ProjectilUIClass = NewObject<UProjectilUI>(UProjectilUI::StaticClass());
 	if (ProjectilUIClass != nullptr)
 	{
-		ProjectilUIClass->Initailize();
+		ProjectilUIClass->Init(this);
 	}
 }
 void ATestProjectCharacter::Tick(float DeltaTime)
@@ -163,11 +163,15 @@ void ATestProjectCharacter::GageValue(float value)
 	{
 		GageTime = 3.0f;
 	}	
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Input Value : Float : %f"), (GageTime / 3.0f)));
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Input Value : Float : %f"), (GageTime / 3.0f)));	
 	//if (ProjectilUIClass)
 	//{
-	//	ProjectilUIClass->SetGage(GageTime, 3.0f);
+	//	ProjectilUIClass->SetGage(GageTime / 3.0f);
 	//}
+}
+float ATestProjectCharacter::GetGageData()
+{
+	return GageTime;
 }
 void ATestProjectCharacter::MoveRight(float Value)
 {

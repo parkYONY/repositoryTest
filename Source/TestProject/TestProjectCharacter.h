@@ -64,7 +64,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class AProjectile* TestProjectile;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI, meta = (BindWidget))
+	UPROPERTY(VisibleAnywhere)
 	class UProjectilUI* ProjectilUIClass;
 
 	UWorld* World;
@@ -84,9 +84,11 @@ public:
 
 	UFUNCTION()
 	void GageValue(float value);
+	float GetGageData();
 
 	void StartFire();
 	void StopFire();	
 	void StartFireSecond();
 	void StopFireSecond();	
+	
 };
