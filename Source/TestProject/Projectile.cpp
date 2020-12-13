@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/ArrowComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "TestProjectCharacter.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -12,7 +13,7 @@ AProjectile::AProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	UE_LOG(LogTemp, Warning, TEXT("aprojectile"));
+	//UE_LOG(LogTemp, Warning, TEXT("aprojectile"));
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	if (CollisionComponent != nullptr)
 	{		
@@ -38,25 +39,30 @@ AProjectile::AProjectile()
 	if (ArrowComponent != nullptr)
 	{		
 		ArrowComponent->bHiddenInGame = false;
-		ArrowComponent->ArrowColor = FColor(150, 200, 255);
+		//ArrowComponent->ArrowColor = FColor(150, 200, 255);
+		ArrowComponent->ArrowColor = FColor(255, 0, 0);
 		ArrowComponent->bTreatAsASprite = true;
 		ArrowComponent->SetupAttachment(CollisionComponent);
 		ArrowComponent->bIsScreenSizeScaled = true;			
 		ArrowComponent->SetEditorScale(1.0f);
 	}		
-	destroyTime = 0;
+	destroyTime = 3;
 }
 
 // Called when the game starts or when spawned
 void AProjectile::BeginPlay()
 {
-	Super::BeginPlay();			
+	Super::BeginPlay();				
 }
 
 // Called every frame
 void AProjectile::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);					
+	Super::Tick(DeltaTime);						
+}
+void AProjectile::CreateObject(UWorld* World, FVector Location, FRotator Rotation)
+{
+	World->SpawnActor<AProjectile>(Location, Rotation);
 }
 void AProjectile::SetFireVelocitySetting(const FVector& Direction)
 {		
@@ -68,32 +74,58 @@ void AProjectile::SetFireVelocitySetting(const FVector& Direction)
 	FVector Veclocity = FVector(velocityX, velocityY, velocityZ);
 	ProjectileMovementComponent->Velocity = Veclocity;	
 }
-void AProjectile::SetArrowSetting(bool type)
-{	
-	FVector scale = FVector(0.0f, 0.0f, 0.0f);
-	destroyTime = 0;
-	if (type)
-	{
-		destroyTime = 5;
-		UE_LOG(LogTemp, Warning, TEXT("3second"));		
-		scale = FVector(5.0f, 5.0f, 5.0f);						
-	}
-	else
-	{		
-		destroyTime = 3;
-		UE_LOG(LogTemp, Warning, TEXT("basic"));		
-		scale = FVector(1.0f, 1.0f, 1.0f);		
-	}		
-	ArrowComponent->SetWorldScale3D(scale);
+void AProjectile::TimeDestroy(int32 destroytime)
+{
+	destroyTime = destroytime;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AProjectile::TimeDestroy, 1.0f, true);
 }
-void AProjectile::TimeDestroy()
+void AProjectile::SetArrowSetting(FVector scale, FColor color)
 {	
-	--destroyTime;
-	if (destroyTime < 1)
-	{
-		ProjectileObjectDistroy();
-	}
+	ArrowComponent->SetWorldScale3D(scale);		
+	ArrowComponent->ArrowColor = color;
+	//FVector scale = FVector(0.0f, 0.0f, 0.0f);
+	////destroyTime = 0;
+	//if (type)
+	//{
+	//	//destroyTime = 5;
+	//	//UE_LOG(LogTemp, Warning, TEXT("3second"));		
+	//	scale = FVector(5.0f, 5.0f, 5.0f);						
+	//}
+	//else
+	//{		
+	//	//destroyTime = 3;
+	//	//UE_LOG(LogTemp, Warning, TEXT("basic"));		
+	//	scale = FVector(1.0f, 1.0f, 1.0f);		
+	//}		
+	//ArrowComponent->SetWorldScale3D(scale);
+	//GetWorldTimerManager().SetTimer(TimerHandle, this, &AProjectile::TimeDestroy, 1.0f, true);
+
+	//FVector scale = FVector(0.0f, 0.0f, 0.0f);
+	//destroyTime = 0;
+	//switch (keytype)
+	//{
+	//case EFireType::E_1Second:
+	//	break;
+	//case EFireType::E_3Second:
+	//	destroyTime = 5;
+	//	UE_LOG(LogTemp, Warning, TEXT("projecile 3second"));		
+	//	scale = FVector(5.0f, 5.0f, 5.0f);
+	//	break;
+	//case EFireType::E_Basic_Q:
+	//	destroyTime = 3;
+	//	UE_LOG(LogTemp, Warning, TEXT("projecile Q"));		
+	//	scale = FVector(1.0f, 1.0f, 1.0f);
+	//	break;
+	//case EFireType::E_Basic_W:
+	//	destroyTime = 5;
+	//	UE_LOG(LogTemp, Warning, TEXT("projecile W"));		
+	//	scale = FVector(1.0f, 1.0f, 1.0f);
+	//	break;
+	//default:
+	//	break;
+	//}
+	//ArrowComponent->SetWorldScale3D(scale);
+	//GetWorldTimerManager().SetTimer(TimerHandle, this, &AProjectile::TimeDestroy, 1.0f, true);
 }
 void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -102,6 +134,14 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	{		
 		ProjectileObjectDistroy();
 		//OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+	}
+}
+void AProjectile::TimeDestroy()
+{
+	--destroyTime;
+	if (destroyTime < 1)
+	{
+		ProjectileObjectDistroy();
 	}
 }
 void AProjectile::ProjectileObjectDistroy()

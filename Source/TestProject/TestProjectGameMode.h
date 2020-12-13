@@ -12,6 +12,19 @@ class ATestProjectGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+    UFUNCTION(BlueprintCallable, Category = "UMG_Game")
+        void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass);
+
+protected:
+    virtual void BeginPlay() override;
+public:
+    UPROPERTY(EditAnywhere, Category = "UMG_Game")
+    UUserWidget* CurrentWidget;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UMG_Game")
+        TSubclassOf<UUserWidget> StartingWidgetClass;
+
+public:
 	ATestProjectGameMode();
 };
 

@@ -6,6 +6,16 @@
 #include "GameFramework/Character.h"
 #include "TestProjectCharacter.generated.h"
 
+UENUM()
+enum class EFireType : uint8
+{
+	E_1Second_W UMETA(DisplayName = "1Second W"),
+	E_3Second_Q UMETA(DisplayName = "3Second Q"),
+	E_Basic_Q UMETA(DisplayName = "Basic Q"),
+	E_Basic_W UMETA(DisplayName = "Basic W"),
+	E_END	  UMETA(DisplayName = "END"),
+};
+
 UCLASS(config=Game)
 class ATestProjectCharacter : public ACharacter
 {
@@ -34,6 +44,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 
@@ -53,16 +64,29 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class AProjectile* TestProjectile;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI, meta = (BindWidget))
+	class UProjectilUI* ProjectilUIClass;
+
 	UWorld* World;
-	bool KeyCheck;
-	bool fireOn;
-	float InputTime;
-	
+	bool KeyCheckQ;
+	bool KeyCheckW;
+
+	bool fireOn;	
+	bool Isfire;		
+	float InputTime;	
+	EFireType keyTpye;
+	float GageTime;
+	float input;
 
 public:
 	UFUNCTION()		
-	void Fire(bool keycheck);	
+	void Fire(/*bool keycheck*/EFireType keytype);
+
+	UFUNCTION()
+	void GageValue(float value);
 
 	void StartFire();
-	void StopFire();
+	void StopFire();	
+	void StartFireSecond();
+	void StopFireSecond();	
 };

@@ -38,11 +38,17 @@ private:
 	class UArrowComponent* ArrowComponent;	
 
 	FTimerHandle TimerHandle;		
-	int32 destroyTime;
+	int32 destroyTime;	
+	FColor colorSetting;
 
 public:
 	void SetFireVelocitySetting(const FVector& Direction);	
-	void SetArrowSetting(bool type);		
+	
+	UFUNCTION()
+	void SetArrowSetting(FVector scale, FColor color);
+	
+	void TimeDestroy(int32 destroytime);
 	void TimeDestroy();
-	void ProjectileObjectDistroy();
+	void ProjectileObjectDistroy();	
+	void CreateObject(UWorld* World, FVector Location, FRotator Rotation);
 };
