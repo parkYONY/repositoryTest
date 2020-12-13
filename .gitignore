@@ -4,6 +4,5 @@
 /Build
 /Plugins
 *.sln
-/TestProject.sln
 *_BuiltData.uasset
 /Binaries/Win64/*.pdb
