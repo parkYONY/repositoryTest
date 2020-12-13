@@ -3,3 +3,8 @@
 
 #include "MainUI.h"
 #include "TestProjectCharacter.h"
+
+UMainUI::UMainUI(const FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer)
+{
+}

@@ -70,15 +70,17 @@ void ATestProjectCharacter::BeginPlay()
 	//}
 
 	if (GameUIWidget != nullptr)
-	{
+	{		
 		AMyPlayerController* controller = Cast<AMyPlayerController>(Controller);
+		if (controller == nullptr) return;
 		GameUIWidget = CreateWidget<UGameUI>(controller, GameUICalss);
-		if (GameUIWidget != nullptr)
-		{
-			GameUIWidget->Player = this;
-			GameUIWidget->UIInitalize();
-			GameUIWidget->AddToViewport();
-		}
+		if (!GameUIWidget) return;
+
+		UE_LOG(LogTemp, Warning, TEXT("widgetcreate"));
+		GameUIWidget->Player = this;
+		GameUIWidget->UIInitalize();
+		GameUIWidget->AddToViewport();
+
 	}
 }
 void ATestProjectCharacter::Tick(float DeltaTime)
@@ -179,12 +181,11 @@ void ATestProjectCharacter::GageValue(float value)
 	{
 		GageTime = 3.0f;
 	}		
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Input Value : Float : %f"), (GageTime / 3.0f)));
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Input Value : Float : %f"), (GageTime / 3.0f)));	
 	if (GameUIWidget != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("barrrrr"));
+	{		
 		GameUIWidget->ChangeGageData(GageTime / 3.0f);
-	}	
+	}
 }
 void ATestProjectCharacter::MoveRight(float Value)
 {

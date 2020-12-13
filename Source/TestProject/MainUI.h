@@ -14,6 +14,8 @@ class TESTPROJECT_API UMainUI : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	UMainUI(const FObjectInitializer& ObjectInitializer);
+
 	virtual void UIInitalize() {};
 
 public:

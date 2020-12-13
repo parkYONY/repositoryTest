@@ -14,7 +14,7 @@ void UProjectilInfoUI::SetGageData(float value)
 {
 	if (ProgressBarUI != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("barrrrr"));
+		UE_LOG(LogTemp, Warning, TEXT("progressbar"));
 		ProgressBarUI->SetPercent(value);
 	}	
 }
