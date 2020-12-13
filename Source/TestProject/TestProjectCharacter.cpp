@@ -4,11 +4,15 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Projectile.h"
 #include "ProjectilUI.h"
 #include "TestProjectGameMode.h"
+#include "MainUI.h"
+#include "GameUI.h"
+#include "MyPlayerController.h"
 
 ATestProjectCharacter::ATestProjectCharacter()
 {
@@ -59,10 +63,22 @@ ATestProjectCharacter::ATestProjectCharacter()
 void ATestProjectCharacter::BeginPlay()
 {
 	Super::BeginPlay();			
-	ProjectilUIClass = NewObject<UProjectilUI>(UProjectilUI::StaticClass());
-	if (ProjectilUIClass != nullptr)
+	//ProjectilUIClass = NewObject<UProjectilUI>(UProjectilUI::StaticClass());
+	//if (ProjectilUIClass != nullptr)
+	//{
+	//	ProjectilUIClass->Init(this);
+	//}
+
+	if (GameUIWidget != nullptr)
 	{
-		ProjectilUIClass->Init(this);
+		AMyPlayerController* controller = Cast<AMyPlayerController>(Controller);
+		GameUIWidget = CreateWidget<UGameUI>(controller, GameUICalss);
+		if (GameUIWidget != nullptr)
+		{
+			GameUIWidget->Player = this;
+			GameUIWidget->UIInitalize();
+			GameUIWidget->AddToViewport();
+		}
 	}
 }
 void ATestProjectCharacter::Tick(float DeltaTime)
@@ -162,16 +178,13 @@ void ATestProjectCharacter::GageValue(float value)
 	if (GageTime > 3.0f)
 	{
 		GageTime = 3.0f;
+	}		
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Input Value : Float : %f"), (GageTime / 3.0f)));
+	if (GameUIWidget != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("barrrrr"));
+		GameUIWidget->ChangeGageData(GageTime / 3.0f);
 	}	
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Input Value : Float : %f"), (GageTime / 3.0f)));	
-	//if (ProjectilUIClass)
-	//{
-	//	ProjectilUIClass->SetGage(GageTime / 3.0f);
-	//}
-}
-float ATestProjectCharacter::GetGageData()
-{
-	return GageTime;
 }
 void ATestProjectCharacter::MoveRight(float Value)
 {

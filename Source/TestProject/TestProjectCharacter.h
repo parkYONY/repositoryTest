@@ -67,6 +67,12 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UProjectilUI* ProjectilUIClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UGameUI> GameUICalss;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI", meta = (BindWidget));
+	class UGameUI* GameUIWidget;
+
 	UWorld* World;
 	bool KeyCheckQ;
 	bool KeyCheckW;
@@ -83,8 +89,7 @@ public:
 	void Fire(/*bool keycheck*/EFireType keytype);
 
 	UFUNCTION()
-	void GageValue(float value);
-	float GetGageData();
+	void GageValue(float value);	
 
 	void StartFire();
 	void StopFire();	

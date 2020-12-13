@@ -16,8 +16,7 @@ class TESTPROJECT_API UProjectilUI : public UUserWidget
 
 public:	
 	UProjectilUI(const FObjectInitializer& Initializer);
-
-	virtual void NativePreConstruct() override;
+	
 	virtual void NativeConstruct() override;
 	
 	UFUNCTION()
@@ -35,10 +34,10 @@ private:
 	class UButton* ResetButton;
 
 	UPROPERTY(meta=(BindWidget))
-	class UProgressBar* ProgressBarUI;	
+	class UProgressBar* ProgressBarUI;
 
 	UPROPERTY(VisibleAnywhere)
-	class ATestProjectCharacter* Player;
+	class ATestProjectCharacter* Player;	
 
 	//UPROPERTY(VisibleAnywhere)
 	//class UGageUI* gageBar;
